@@ -1,0 +1,12 @@
+package rules;
+
+import com.address.Address;
+
+dialect "mvel"
+
+rule "Monaco zipcode"
+  when
+    Address(address.zipcode == "98015")
+  then
+    System.out.println("Direccion correcta");
+end

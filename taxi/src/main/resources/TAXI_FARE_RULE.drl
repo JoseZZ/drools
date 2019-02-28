@@ -1,0 +1,63 @@
+import spring.drools.app.*;
+import spring.drools.model.*;
+import spring.drools.service.*;
+import java.util.*;
+
+global spring.drools.model.Fare rideFare;
+dialect  "mvel"
+
+// Regla 1. No es de noche y la distancia es menor de 10
+rule "Calculate Taxi Fare - Scenario 1"
+    when
+        // La regla acepta un objeto TaxiRide
+        // Comprobamos los valores de los atributos y calculamos la tarifa en consecuencia
+        taxiRideInstance:TaxiRide(isNightSurcharge == false && distanceInMile < 10);
+    then
+       	rideFare.setNightSurcharge(0L);
+       	rideFare.setRideFare(70L);
+end
+
+// Regla 2. Es de noche y la distancia es menor de 10
+rule "Calculate Taxi Fare - Scenario 2"
+    when
+        taxiRideInstance:TaxiRide(isNightSurcharge == true && distanceInMile < 10);
+    then
+       	rideFare.setNightSurcharge(30L);
+       	rideFare.setRideFare(70L);
+end
+
+// Regla 3. No es de noche y la distancia esta entre 10 y 100
+rule "Calculate Taxi Fare - Scenario 3"
+    when
+        taxiRideInstance:TaxiRide(isNightSurcharge == false && distanceInMile >= 10 && distanceInMile < 100);
+    then
+       	rideFare.setNightSurcharge(0L);
+       	rideFare.setRideFare(70 + (2 * taxiRideInstance.getDistanceInMile()));
+end
+
+// Regla 4. Es de noche y la distancia esta entre 10 y 100
+rule "Calculate Taxi Fare - Scenario 4"
+    when
+        taxiRideInstance:TaxiRide(isNightSurcharge == true && distanceInMile >= 10 && distanceInMile < 100);
+    then
+       	rideFare.setNightSurcharge(30 + taxiRideInstance.getDistanceInMile());
+       	rideFare.setRideFare(70 + (2 * taxiRideInstance.getDistanceInMile()));
+end
+
+// Regla 5. No es de noche y la distancia es mayor de 100
+rule "Calculate Taxi Fare - Scenario 5"
+    when
+        taxiRideInstance:TaxiRide(isNightSurcharge == false && distanceInMile >= 100);
+    then
+       	rideFare.setNightSurcharge(0L);
+       	rideFare.setRideFare(70 + (2 * taxiRideInstance.getDistanceInMile()));
+end
+
+// Regla 6. Es de noche y la distancia es mayor de 100
+rule "Calculate Taxi Fare - Scenario 6"
+    when
+        taxiRideInstance:TaxiRide(isNightSurcharge == true && distanceInMile >= 100);
+    then
+       	rideFare.setNightSurcharge(30 + taxiRideInstance.getDistanceInMile());
+       	rideFare.setRideFare(70 + (2 * taxiRideInstance.getDistanceInMile()));
+end

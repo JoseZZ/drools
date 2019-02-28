@@ -1,0 +1,62 @@
+package rules
+
+import com.drools.entity.*;
+
+// Sumamos el importe total de los productos
+rule "Initial rule"
+  // Salience indica la prioridad de la regla. A mayor salience, mayor prioridad
+  // Si se cumplen las condiciones para que salte mas de una regla, se ejecutaran en orden
+  // dependiendo del salience
+	salience 20
+    when
+        // Cuando en la memoria de trabajo se haya insertado un objeto order
+        order : Order ();
+        // Guardamos la suma de todos los precios de los productos de la orden en una variable
+        totalPrice : Double() from accumulate (
+        	Product( productPrice : price) from order.getProducts,
+        	init (double total = 0;),
+        	action (total += productPrice;),
+        	result (new Double(total))
+        );
+    then
+      // Guardamos el total en el objeto order
+    	order.setTotalPrice(totalPrice);
+end
+
+// Comprobamos si el cliente es SILVER, si es así aplicamos un 5% de descuento
+rule "SILVER customer rule"
+	salience 15
+	when
+	      // Cuando se cree una nueva orden
+        order : Order ();
+        // Si el cliente es Silver
+        customer : Customer ( status == Customer.SILVER_CUSTOMER) from order.getCustomer();
+    then
+        // Aplicamos el descuento
+        order.setTotalPrice(order.getTotalPrice() * (1 - (5 / 100d) ) );
+end
+
+// Comprobamos si el cliente es GOLD, si es así aplicamos un 10% de descuento
+rule "GOLD customer rule"
+	salience 15
+	when
+	      // Cuando se cree una nueva orden
+        order : Order ();
+        // Si el cliente es Gold
+        customer : Customer ( status == Customer.GOLD_CUSTOMER) from order.getCustomer();
+    then
+    // Aplicamos el descuento
+    	order.setTotalPrice(order.getTotalPrice() * (1 - (10 / 100d) ) );
+end
+
+// Comprobamos si el pedido tiene 10 o más productos, si es así aplicamos un 15% de descuento
+// Esta regla solo será aplicada en Septiembre de 2012
+rule "Number of products rule"
+	salience 10
+	date-effective "01-SEP-2012"
+	date-expires "01-OCT-2012"
+	when
+        order : Order (products.size() >= 10);
+    then
+    	order.setTotalPrice(order.getTotalPrice() * (1 - (15 / 100d) ) );
+end
