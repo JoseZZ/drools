@@ -1,12 +1,14 @@
 package rules;
 
-import com.address.Address;
+import com.address.model.*;
 
 dialect "mvel"
 
 rule "Monaco zipcode"
   when
-    Address(address.zipcode == "98015")
+    propuesta : Propuesta()
+    address:Address(zipcode == "90185" && pais == "Monaco")
   then
-    System.out.println("Direccion correcta");
+    propuesta.setValoracion(100L);
+    propuesta.setPropuesta(null);
 end

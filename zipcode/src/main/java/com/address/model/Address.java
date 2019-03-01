@@ -1,4 +1,4 @@
-package com.address;
+package com.address.model;
 
 import lombok.Data;
 
