@@ -26,5 +26,17 @@ public class ZipCodeTest {
         Propuesta propuesta = validatorService.valoraDireccion(address);
         assertNotNull(propuesta);
         assertEquals(propuesta.getValoracion(), Long.valueOf(100L));
+        assertEquals(propuesta.getPropuesta(), null);
+    }
+
+    @Test
+    public void whenZipCodeNotBelongsToMonacoAndCountryIsMonaco_thenValidationIsERROR(){
+        Address address = new Address();
+        address.setPais("Monaco");
+        address.setZipcode("12345");
+        Propuesta propuesta = validatorService.valoraDireccion(address);
+        assertNotNull(propuesta);
+        assertEquals(propuesta.getValoracion(), Long.valueOf(0L));
+        assertEquals(propuesta.getPropuesta(), "90185");
     }
 }

@@ -12,3 +12,12 @@ rule "Monaco zipcode"
     propuesta.setValoracion(100L);
     propuesta.setPropuesta(null);
 end
+
+rule "Monaco zipcode wrong"
+  when
+    propuesta : Propuesta()
+    address:Address(zipcode != "90185" && pais == "Monaco")
+  then
+    propuesta.setValoracion(0L);
+    propuesta.setPropuesta("90185");
+end
