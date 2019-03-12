@@ -3,3 +3,6 @@
 *.lst
 *.iml
 *.jar
+rulebook/mvnw
+*.cmd
+rulebook/.mvn/wrapper/maven-wrapper.jar
