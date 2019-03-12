@@ -1,0 +1,78 @@
+package rules;
+
+import com.address.model.*
+import java.util.Map
+import java.util.HashMap;
+import com.training.java.drools.spainvalidator.model.*;
+
+dialect "mvel";
+
+function boolean checkCode(String codigo, String provincia){
+    Map codigos = new HashMap();
+    codigos.put("VI", "01");
+    codigos.put("AB", "02");
+    codigos.put("A" , "03");
+    codigos.put("AL", "04");
+    codigos.put("AV", "05");
+    codigos.put("BA", "06");
+    codigos.put("PM", "07");
+    codigos.put("B" , "08");
+    codigos.put("BU", "09");
+    codigos.put("CC", "10");
+    codigos.put("CA", "11");
+    codigos.put("CS", "12");
+    codigos.put("CR", "13");
+    codigos.put("CO", "14");
+    codigos.put("C" , "15");
+    codigos.put("CU", "16");
+    codigos.put("GE", "17");
+    codigos.put("GR", "18");
+    codigos.put("GU", "19");
+    codigos.put("SS", "20");
+    codigos.put("H" , "21");
+    codigos.put("HU", "22");
+    codigos.put("J" , "23");
+    codigos.put("LE", "24");
+    codigos.put("L" , "25");
+    codigos.put("LO", "26");
+    codigos.put("LU", "27");
+    codigos.put("M" , "28");
+    codigos.put("MA", "29");
+    codigos.put("MU", "30");
+    codigos.put("NA", "31");
+    codigos.put("OR", "32");
+    codigos.put("O" , "33");
+    codigos.put("P" , "34");
+    codigos.put("GC", "35");
+    codigos.put("PO", "36");
+    codigos.put("SA", "37");
+    codigos.put("TF", "38");
+    codigos.put("S" , "39");
+    codigos.put("SG", "40");
+    codigos.put("SE", "41");
+    codigos.put("SO", "42");
+    codigos.put("T" , "43");
+    codigos.put("TE", "44");
+    codigos.put("TO", "45");
+    codigos.put("V" , "46");
+    codigos.put("VA", "47");
+    codigos.put("BI", "48");
+    codigos.put("ZA", "49");
+    codigos.put("Z" , "50");
+    codigos.put("CE", "51");
+    codigos.put("ML", "52");
+
+    return (codigos.containsKey(provincia) && codigos.containsValue(codigo.substring(0, 2)) && codigos.get(provincia).equals(codigo));
+
+}
+
+rule "Zipcode OK"
+  when
+    propuesta : Propuesta()
+    address : Address()
+    checkCode(address.getZipcode(), address.getPais());
+  then
+    propuesta.setValoracion(100L);
+    propuesta.setPropuesta(null);
+end
+
