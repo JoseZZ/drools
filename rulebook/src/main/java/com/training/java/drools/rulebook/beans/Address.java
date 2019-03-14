@@ -1,9 +1,7 @@
 package com.training.java.drools.rulebook.beans;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder

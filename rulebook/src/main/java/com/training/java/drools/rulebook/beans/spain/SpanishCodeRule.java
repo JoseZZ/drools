@@ -1,19 +1,18 @@
-package com.training.java.drools.rulebook.rules;
+package com.training.java.drools.rulebook.beans.spain;
 
-import com.deliveredtechnologies.rulebook.lang.RuleBuilder;
-import com.deliveredtechnologies.rulebook.model.GoldenRule;
-import com.deliveredtechnologies.rulebook.model.Rule;
-import com.deliveredtechnologies.rulebook.model.RuleChainActionType;
-import com.deliveredtechnologies.rulebook.model.rulechain.cor.CoRRuleBook;
+import com.deliveredtechnologies.rulebook.RuleState;
+import com.deliveredtechnologies.rulebook.annotation.Given;
+import com.deliveredtechnologies.rulebook.annotation.Result;
+import com.deliveredtechnologies.rulebook.annotation.Rule;
+import com.deliveredtechnologies.rulebook.annotation.Then;
+import com.deliveredtechnologies.rulebook.annotation.When;
+import com.deliveredtechnologies.rulebook.spring.RuleBean;
 import com.training.java.drools.rulebook.beans.Address;
 import java.util.HashMap;
 
-/**
- * @author <a href="changeme@ext.inditex.com">Jose Gonzalez</a>
- */
-public class PostalCodeValidatorRule extends CoRRuleBook<Boolean> {
-
-    private static final String SPAIN = "ES";
+@RuleBean
+@Rule(order = 2)
+public class SpanishCodeRule {
 
     private final HashMap<String, String> codigos = new HashMap<String, String>(){{
         put("VI", "01");
@@ -70,21 +69,24 @@ public class PostalCodeValidatorRule extends CoRRuleBook<Boolean> {
         put("ML", "52");
     }};
 
-    @Override
-    public void defineRules() {
-        // Regla para validar una direccion española
-        addRule(RuleBuilder.create().withFactType(Address.class).withResultType(Boolean.class)
-            // Solo puede haber un when por regla
-            .when(facts ->
-                    facts.getOne().getCountry().equals(SPAIN) && // getOne() se usa para obtener el valor del Fact cuando solo hay uno
-                    codigos.containsKey(facts.getValue("address").getRegion()) && // getValue() obtiene el Fact por nombre
-                    codigos.get(facts.getOne().getRegion()).equals(facts.getOne().getZipCode().substring(0, 2)))
-            // Puede haber varios then
-            .then((facts, result) -> result.setValue(Boolean.TRUE))
-            // Con stop rompemos la cadena, no se van a evaluar mas reglas despues
-            .stop()
-            .build());
+    @Given("address")
+    private Address address;
+
+    @Result
+    private String resultado;
+
+    // Solo puede haber un metodo when
+    @When
+    public boolean when() {
+        boolean validacion = codigos.containsKey(address.getRegion()) && codigos.get(address.getRegion()).equals(address.getZipCode().substring(0, 2));
+        System.out.println("¿El codigo postal corresponde a la provincia?: " + validacion);
+        return validacion;
     }
 
-
+    @Then
+    public RuleState then() {
+        System.out.println("El codigo postal " + address.getZipCode() + " pertecene a " + address.getRegion());
+        this.resultado = "OK";
+        return RuleState.BREAK;
+    }
 }
