@@ -6,3 +6,4 @@
 rulebook/mvnw
 *.cmd
 rulebook/.mvn/wrapper/maven-wrapper.jar
+drools-templates/mvnw

@@ -1,0 +1,39 @@
+template header
+
+codigos
+country
+
+package rules.templates;
+
+global com.training.java.drools.droolstemplates.model.Propuesta propuesta;
+
+import com.training.java.drools.droolstemplates.model.Propuesta;
+import com.training.java.drools.droolstemplates.model.Address;
+import com.training.java.drools.droolstemplates.model.SpainZipValidation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+template "validator"
+
+rule "Validate address"
+    when
+      $address : Address()
+
+      //$map: Map( @{country} contains "M" )
+
+
+      //Address(country == '@{country}')
+      //HashMap( codigos(this["M"]) == "28" )
+      Map( @{codigos}["M"] == "28" )
+      //&& Address (@{codigos}.containsKey(region))
+      //&& eval(@{codigos}.containsKey($address.region))
+     // && @{codigos}.get($address.getRegion()).equals($address.getZipCode().substring(0, 2)))
+    then
+        propuesta.setValoracion(0L);
+        propuesta.setPropuesta("90185");
+    end
+
+end template
